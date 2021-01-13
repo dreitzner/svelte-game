@@ -23,7 +23,7 @@
 	let animating = false;
 	const question = () => {
 		animating = true;
-		let time = 10;
+		let time = 7.5;
 		const animate = async () => {
 			const randomIndex = Math.floor(Math.random() * openQuestions.length);
 			currentText = openQuestions[randomIndex].text;
@@ -50,7 +50,8 @@
 <main>
 	<section style={styles}>
 		<div>
-			<h1>Add names</h1>
+			<h1>Find that bible verse game</h1>
+			<h2>Add names</h2>
 			<input
 				type="text"
 				placeholder="Name"
@@ -101,6 +102,10 @@
 </main>
 
 <style>
+	h1{
+		font-size: 42px;
+		margin: 15px;
+	}
 	main {
 		text-align: center;
 		height: 100vh;
