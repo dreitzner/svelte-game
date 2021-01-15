@@ -130,6 +130,10 @@
 	<section style={styles}><div>END - nothing to see here</div></section>
 </main>
 
+<footer>
+	<a href="https://reitzner.at">&copy; reitzner.at</a>
+</footer>
+
 <style>
 	h1{
 		font-size: 42px;
@@ -193,4 +197,13 @@
 		cursor: pointer;
 	}
 
+	footer {
+		position: fixed;
+		bottom: 15px;
+		right: 15px;
+	}
+
+	a {
+		text-decoration: none;
+	}
 </style>
