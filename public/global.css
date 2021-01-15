@@ -64,4 +64,5 @@ button:focus {
 
 .flex {
 	display: flex;
+	flex-wrap: wrap;
 }

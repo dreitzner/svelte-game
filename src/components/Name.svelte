@@ -25,6 +25,7 @@
         align-items: center;
         flex-direction: column;
         width: 100%;
+        min-width: 180px;
         box-shadow: 0 3px 10px grey;
     }
     button {
