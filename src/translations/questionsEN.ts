@@ -1,3 +1,5 @@
+import { questionMapper } from "../services/questionMapper"
+
 const _qs = [
     'has fire in it',
     'is part of a psalm of David',
@@ -29,7 +31,7 @@ const _qs = [
     'has words of Mose in it',
     'has Enoch in it',
     'has Elijah in it',
-    'is the 150th',
+    'is the 150th of it\'s chapter',
     'mentions Holy Spirit',
     'tells someone to not be afraid',
     'mentions the church',
@@ -40,4 +42,4 @@ const _qs = [
     'mentions a cave',
 ]
 
-export const questions: IQuestion[] = _qs.map(text => ({asked: false, text})); 
+export const questions: IQuestion[] = questionMapper(_qs);

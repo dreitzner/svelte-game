@@ -1,16 +1,31 @@
 <script lang="ts">
-	import {questions} from './services/questions';
+	let translation: ITranslation = {
+		questions: [],
+	};
 	import Name from './components/Name.svelte';
+	import { questionMapper } from './services/questionMapper';
 
 	let input: HTMLInputElement;
 	let name: string = '';
 	let names: IName[] = [];
 	
-	$: openQuestions = questions.filter(q => !q.asked);
-	let currentText = ' ';
+	const setLanguage = async (lang: string) => {
+		if(lang === 'DE') {
+			translation = (await import(`./translations/translationDE`)).default;
+		}
+		if(lang === 'EN') {
+			translation = (await import(`./translations/translationEN`)).default;
+		}
+	};
 
+	$: translate = (section: string, type: string) => translation?.[section]?.[type] ?? '';
+
+	$: openQuestions = translation.questions.filter(q => !q.asked);
+	let currentText = '...';
+
+	const createNamePoints = (name: string) => ({name, points: 0});
 	const addName = () => {
-		names = [...names, {name, points: 0}];
+		names = [...names, createNamePoints(name)];
 		name = '';
 		input.focus();
 	};
@@ -22,6 +37,7 @@
 
 	let animating = false;
 	const question = () => {
+		if (animating) return;
 		animating = true;
 		let time = 7.5;
 		const animate = async () => {
@@ -33,8 +49,8 @@
 					animate();
 				}, 1000/time);
 			}
-			const realIndex = questions.findIndex(q => q.text === currentText);
-			questions[realIndex].asked = true;
+			const realIndex = translation.questions.findIndex(q => q.text === currentText);
+			translation.questions[realIndex].asked = true;
 			animating = false;
 		}
 		animate();
@@ -42,16 +58,27 @@
 
 	$: sorted = names.sort((a, b) => b.points - a.points);
 	
-	$: finished = sorted[0]?.points >= 21 || !openQuestions.length;
+	$: finished = sorted[0]?.points >= 21 || (translation.questions.length && !openQuestions.length);
 
-	$: styles = `transform: translateY(-${(Number(started) + Number(finished)) * 100}vh)`
+	$: styles = `transform: translateY(-${(Number(translation.questions.length > 0) + Number(started) + Number(finished)) * 100}vh)`;
+
+	const reset = () => {
+		translation.questions = questionMapper(translation.questions.map(({text}) => text));
+		names = names.map(({name}) => createNamePoints(name));
+	}
 </script>
 
 <main>
 	<section style={styles}>
 		<div>
-			<h1>Find that bible verse game</h1>
-			<h2>Add names</h2>
+			<button class="add" on:click={() => setLanguage('EN')}>English</button>
+			<button on:click={() => setLanguage('DE')}>Deutsch</button>
+		</div>
+	</section>
+	<section style={styles}>
+		<div>
+			<h1>{translate('setup', 'headline')}</h1>
+			<h2>{translate('setup', 'subHeadline')}</h2>
 			<input
 				type="text"
 				placeholder="Name"
@@ -60,14 +87,14 @@
 			<button
 				class="add"
 				on:click={addName}>
-				Add Name
+				{translate('setup', 'addButton')}
 			</button>
 			{#if names.length}
 				<button
 					on:click={start}>
-					Start the game
+					{translate('setup', 'startButton')}
 				</button>
-				<h2>Players</h2>
+				<h2>{translate('setup', 'players')}</h2>
 				<ol>
 					{#each names as _name}
 						<li>{_name.name}</li>
@@ -78,13 +105,14 @@
 	</section>
 	<section style={styles}>
 		<div>
-			<h1>Find a Bible verse that...</h1>
+			<h1>{translate('game', 'headline')}</h1>
 			<h1 class:animating>
 				{currentText}
 			</h1>
 			<button
+				class:animating
 				on:click={question}>
-				Show me the next question
+				{translate('game', 'button')}
 			</button>
 			<div class="flex names">
 				{#each sorted as name}
@@ -95,7 +123,8 @@
 	</section>
 	<section style={styles}>
 		<div>
-			<h1>👑 The winner is {sorted[0]?.name} 👑</h1>
+			<h1>👑 {translate('winner', 'winner')} {sorted[0]?.name} 👑</h1>
+			<p on:click="{reset}">{translate('winner', 'again')}?</p>
 		</div>
 	</section>
 	<section style={styles}><div>END - nothing to see here</div></section>
@@ -124,11 +153,11 @@
 		width: 100%;
 	}
 	section:nth-child(2n+1) {
-		background: orangered;
-		color: white;
+		background: skyblue;
 	}
 	section:nth-child(2n) {
-		background: skyblue;
+		background: orangered;
+		color: white;
 	}
 	input {
 		border: none;
@@ -156,6 +185,12 @@
 
 	.animating {
 		opacity: .3;
+	}
+
+	p {
+		text-decoration: underline;
+		margin-top: 50px;
+		cursor: pointer;
 	}
 
 </style>

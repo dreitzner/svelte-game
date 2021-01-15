@@ -1,0 +1,1 @@
+export const questionMapper = (questions: string[]): IQuestion[] => questions.map(text => ({asked: false, text}));
