@@ -79,16 +79,20 @@
 		<div>
 			<h1>{translate('setup', 'headline')}</h1>
 			<h2>{translate('setup', 'subHeadline')}</h2>
-			<input
-				type="text"
-				placeholder="Name"
-				bind:value={name}
-				bind:this={input}>
-			<button
-				class="add"
-				on:click={addName}>
-				{translate('setup', 'addButton')}
-			</button>
+			<form
+				action="/"
+				on:submit|preventDefault="{addName}">
+				<input
+					type="text"
+					placeholder="Name"
+					bind:value={name}
+					bind:this={input}>
+				<button
+					class="add"
+					type="submit">
+					{translate('setup', 'addButton')}
+				</button>
+			</form>
 			{#if names.length}
 				<button
 					on:click={start}>
@@ -148,10 +152,19 @@
 	section {
 		height: 100vh;
 		display: flex;
-		align-items: center;
-		justify-content: center;
 		transition: all .35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 	}
+	@media screen and (max-width: 640px) {
+        section {
+			overflow: scroll;
+		}
+    }
+	@media screen and (min-width: 641px) {
+        section {
+			align-items: center;
+			justify-content: center;
+		}
+    }
 	section > div {
 		max-width: 980px;
 		width: 100%;
@@ -189,6 +202,10 @@
 
 	.animating {
 		opacity: .3;
+	}
+
+	.names {
+		justify-content: center;
 	}
 
 	p {

@@ -3,15 +3,16 @@
 
     const add = (num: number) => name.points += num;
 </script>
-<div class="flex">
+<div>
     <h2>
         {name.name}
         <sup>({name.points})</sup>
     </h2>
-    
-    <button on:click={() => add(3)}>🥇</button>
-    <button on:click={() => add(2)}>🥈</button>
-    <button on:click={() => add(1)}>🥉</button>
+    <footer>
+        <button on:click={() => add(3)}>🥇</button>
+        <button on:click={() => add(2)}>🥈</button>
+        <button on:click={() => add(1)}>🥉</button>
+    </footer>
 </div>
 
 <style>
@@ -22,17 +23,25 @@
         color: darkblue;
         margin: 10px;
         min-width: 80px;
-        align-items: center;
-        flex-direction: column;
-        width: 100%;
         min-width: 180px;
         box-shadow: 0 3px 10px grey;
+        justify-content: center;
+    }
+    h2 {
+        display: block;
     }
     button {
         background: none;
         border: none;
         outline: none;
-        display: block;
+        display: inline-block;
         font-size: 24px;
+    }
+
+    @media screen and (max-width: 640px) {
+        div {
+            width: 100%;
+        }
+        
     }
 </style>
